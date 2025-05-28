@@ -1,2 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Фото-Блог</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        form { margin-bottom: 30px; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 10px; }
+        button { padding: 10px 20px; margin-top: 10px; }
+        .post { border: 1px solid #ccc; padding: 15px; margin-top: 20px; border-radius: 5px; }
+        .post img { max-width: 100%; height: auto; }
+        .likes { color: #e74c3c; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Фото-Блог</h1>
+    <form method="post" action="{{ url_for('add_post') }}" enctype="multipart/form-data">
+        <label>Название:</label>
+        <input type="text" name="title" required>
+        <label>Описание:</label>
+        <textarea name="description" rows="4" required></textarea>
+        <label>Фото:</label>
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Добавить пост</button>
+    </form>
+
+    {% for index, post in posts %}
+    <div class="post">
+        <h3>{{ post.title }}</h3>
+        <img src="{{ post.image_url }}" alt="Фото">
+        <p>{{ post.description }}</p>
+        
+    </div>
+    {% endfor %}
+</body>
+</html>
 
 
