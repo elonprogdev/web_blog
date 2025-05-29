@@ -38,8 +38,16 @@
     {% endif %}
 
     
-    
-  
-
+    {% for index, post in posts %}
+    <div class="post">
+        <h3>{{ post.title }}</h3>
+        <img src="{{ post.image_url }}" alt="Фото">
+        <p>{{ post.description }}</p>
+        <form method="post" action="{{ url_for('like_post', index=index) }}">
+            <button type="submit">❤️ Лайк</button>
+        </form>
+        <div class="likes">Лайков: {{ post.likes }}</div>
+  </div>
+  {% endfor %}
 </body>
 </html>

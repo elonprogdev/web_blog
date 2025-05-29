@@ -81,6 +81,14 @@ def add_post():
     return redirect(url_for("index"))
 
 
+@app.route("/like/<int:index>", methods=["POST"])
+def like_post(index):
+    posts = session.get("posts", [])
+    if 0 <= index < len(posts):
+        posts[index]["likes"] += 1
+        session["posts"] = posts
+    return redirect(url_for("index"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
