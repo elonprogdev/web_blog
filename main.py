@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import os
+import uuid
 
 
 app = Flask(__name__)
@@ -10,6 +11,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 users = {}  # {login: password}
+likes = {}
 
 
 @app.route("/")
@@ -83,10 +85,19 @@ def add_post():
 
 @app.route("/like/<int:index>", methods=["POST"])
 def like_post(index):
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session["user"]
     posts = session.get("posts", [])
+
     if 0 <= index < len(posts):
-        posts[index]["likes"] += 1
-        session["posts"] = posts
+        like_key = (user, index)
+        if not likes.get(like_key):
+            posts[index]["likes"] += 1
+            likes[like_key] = True
+            session["posts"] = posts
+
     return redirect(url_for("index"))
 
 
