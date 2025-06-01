@@ -11,10 +11,22 @@
         .post { border: 1px solid #ccc; padding: 15px; margin-top: 20px; border-radius: 5px; }
         .post img { max-width: 100%; height: auto; }
         .likes { color: #e74c3c; margin-top: 10px; }
+        .auth { margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <h1>Фото-Блог</h1>
+    <div class="auth">
+        {% if user %}
+            <p>Вы вошли как <strong>{{ user }}</strong></p>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Войти</a> |
+            <a href="{{ url_for('register') }}">Регистрация</a>
+        {% endif %}
+    </div>
+
+    {% if user %}
     <form method="post" action="{{ url_for('add_post') }}" enctype="multipart/form-data">
         <label>Название:</label>
         <input type="text" name="title" required>
@@ -24,8 +36,20 @@
         <input type="file" name="image" accept="image/*" required>
         <button type="submit">Добавить пост</button>
     </form>
+    {% endif %}
 
-    
-  
+    {% for index, post in posts %}
+    <div class="post">
+        <h3>{{ post.title }}</h3>
+        <img src="{{ post.image_url }}" alt="Фото">
+        <p>{{ post.description }}</p>
+        {% if user %}
+        <form method="post" action="{{ url_for('like_post', index=index) }}">
+            <button type="submit">❤️ Лайк</button>
+        </form>
+        {% endif %}
+        <div class="likes">Лайков: {{ post.likes }}</div>
+    </div>
+    {% endfor %}
 </body>
 </html>
