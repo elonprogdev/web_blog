@@ -101,6 +101,26 @@ def like_post(index):
 
     return redirect(url_for("index"))
 
+@app.route("/comment/<int:index>", methods=["POST"])
+def comment_post(index):
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    comment_text = request.form.get("comment")
+    if not comment_text:
+        return redirect(url_for("index"))
+
+    posts = session.get("posts", [])
+    if 0 <= index < len(posts):
+        posts[index].setdefault("comments", [])
+        posts[index]["comments"].append({
+            "author": session["user"],
+            "text": comment_text
+        })
+        session["posts"] = posts
+
+    return redirect(url_for("index"))
+
 
 
 
