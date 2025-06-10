@@ -15,6 +15,7 @@ users = {}  # {login: password}
 likes = {}
 
 
+
 @app.route("/")
 def index():
     posts = session.get("posts", [])
@@ -74,7 +75,8 @@ def add_post():
             "title": title,
             "description": description,
             "image_url": "/" + filepath.replace("\\", "/"),
-            "likes": 0
+            "likes": 0,
+            "liked_by": []
         }
 
         posts = session.get("posts", [])
@@ -96,6 +98,7 @@ def like_post(index):
         like_key = (user, index)
         if not likes.get(like_key):
             posts[index]["likes"] += 1
+            posts[index].setdefault("liked_by", []).append(user)
             likes[like_key] = True
             session["posts"] = posts
 
@@ -120,6 +123,15 @@ def comment_post(index):
         session["posts"] = posts
 
     return redirect(url_for("index"))
+
+@app.route("/post/<int:index>")
+def post_stats(index):
+    posts = session.get("posts", [])
+    if 0 <= index < len(posts):
+        post = posts[index]
+        return render_template("post_stats.html", post=post, index=index)
+    return "Пост не найден", 404
+
 
 
 

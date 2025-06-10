@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Статистика поста</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+        img { max-width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+    <h2>{{ post.title }}</h2>
+    <img src="{{ post.image_url }}" alt="Фото">
+    <p>{{ post.description }}</p>
+    <p><strong>Количество лайков:</strong> {{ post.likes }}</p>
+    <h4>Пользователи, поставившие лайк:</h4>
+    <ul>
+        {% for user in post.liked_by %}
+            <li>{{ user }}</li>
+        {% else %}
+            <li>Пока никто не лайкнул</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}">← Назад к постам</a>
+</body>
+</html>
