@@ -124,15 +124,6 @@ def comment_post(index):
 
     return redirect(url_for("index"))
 
-@app.route("/post/<int:index>")
-def post_stats(index):
-    posts = session.get("posts", [])
-    if 0 <= index < len(posts):
-        post = posts[index]
-        return render_template("post_stats.html", post=post, index=index)
-    return "Пост не найден", 404
-
-
 
 
 

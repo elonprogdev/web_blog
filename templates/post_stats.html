@@ -6,6 +6,7 @@
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
         img { max-width: 100%; height: auto; }
+        .comment { margin-top: 10px; border-top: 1px solid #ccc; padding-top: 10px; }
     </style>
 </head>
 <body>
@@ -21,6 +22,20 @@
             <li>Пока никто не лайкнул</li>
         {% endfor %}
     </ul>
-    <a href="{{ url_for('index') }}">← Назад к постам</a>
+        <h3>Комментарии:</h3>
+    {% for comment in post.comments %}
+        <div class="comment">
+            <strong>{{ comment.author }}</strong>: {{ comment.text }}
+        </div>
+    {% else %}
+        <p>Пока нет комментариев</p>
+    {% endfor %}
+
+    <form method="post">
+        <textarea name="comment" rows="3" required placeholder="Оставьте комментарий..."></textarea><br>
+        <button type="submit">Добавить комментарий</button>
+    </form>
+
+    <br><a href="{{ url_for('index') }}">← Назад</a>
 </body>
 </html>
