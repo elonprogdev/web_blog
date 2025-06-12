@@ -115,11 +115,14 @@ def comment_post(index):
 @app.route("/post/<int:index>")
 def post_stats(index):
     posts = session.get("posts", [])
-    if not (0 <= index < len(posts)):
-        return "Пост не найден", 404
+    if 0 <= index < len(posts):
+        post = posts[index]
+        return render_template("post_stats.html", post=post, index=index)
+    return "Пост не найден", 404
 
-    post = posts[index]
-    return render_template("post_stats.html", post=post, index=index)
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
