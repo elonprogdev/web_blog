@@ -18,23 +18,27 @@
         <img src="{{ post.image_url }}" alt="Фото">
         <p>{{ post.description }}</p>
         <div class="likes">Лайков: {{ post.likes }}</div>
-        <div class="likes">
-            <h4>Поставили лайк:</h4>
-            <ul>
-                {% for user in post.liked_by %}
-                    <li>{{ user }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="comments">
-            <h4>Комментарии:</h4>
-            <ul>
-                {% for comment in post.comments %}
-                    <li><strong>{{ comment.author }}:</strong> {{ comment.text }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
+          <div class="likes">
+    <h4>Поставили лайк:</h4>
+    <ul>
+        {% for user in post.liked_by %}
+            <li><a href="{{ url_for('profile', username=user) }}">{{ user }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+    <div class="comments">
+    <h4>Комментарии:</h4>
+    <ul>
+        {% for comment in post.comments %}
+            <li><strong><a href="{{ url_for('profile', username=comment.author) }}">{{ comment.author }}</a>:</strong> {{ comment.text }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+
+
+
 
     <p><a href="{{ url_for('index') }}">⬅ Назад</a></p>
 </body>

@@ -69,7 +69,8 @@ def add_post():
             "image_url": "/" + filepath.replace("\\", "/"),
             "likes": 0,
             "liked_by": [],
-            "comments": []
+            "comments": [],
+            "author": session["user"]   # <-- добавили автора
         }
 
         posts = session.get("posts", [])
@@ -123,6 +124,15 @@ def post_stats(index):
 
     post = posts[index]
     return render_template("post_stats.html", post=post, index=index)
+
+
+@app.route("/profile/<username>")
+def profile(username):
+    posts = session.get("posts", [])
+    posts_with_index = [(i, post) for i, post in enumerate(posts) if post.get("author") == username]
+    return render_template("profile.html", posts=posts_with_index, username=username)
+
+
 
 
 
