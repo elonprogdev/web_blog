@@ -43,23 +43,24 @@
         <h3>{{ post.title }}</h3>
         <img src="{{ post.image_url }}" alt="Фото">
         <p>{{ post.description }}</p>
+
         {% if user %}
         <form method="post" action="{{ url_for('like_post', index=index) }}">
             <button type="submit">❤️ Лайк</button>
         </form>
+
+        <form method="post" action="{{ url_for('comment_post', index=index) }}">
+            <input type="text" name="comment" placeholder="Ваш комментарий..." required>
+            <button type="submit">Оставить комментарий</button>
+        </form>
+
+        <p><a href="{{ url_for('post_stats', index=index) }}">📊 Подробнее</a></p>
         {% endif %}
+
         <div class="likes">Лайков: {{ post.likes }}</div>
     </div>
     {% endfor %}
-
-    {% if user %}
-    <form method="post" action="{{ url_for('comment_post', index=index) }}">
-        <input type="text" name="comment" placeholder="Ваш комментарий..." required>
-        <button type="submit">Оставить комментарий</button>
-    </form>
-    {% endif %}
-</div>
-{% endfor %}
-
 </body>
 </html>
+
+

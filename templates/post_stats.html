@@ -4,23 +4,40 @@
     <meta charset="UTF-8">
     <title>Статистика поста</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
-        img { max-width: 100%; height: auto; }
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        .post { border: 1px solid #ccc; padding: 15px; margin-top: 20px; border-radius: 5px; }
+        img { max-width: 100%; }
+        .likes, .comments { margin-top: 10px; }
     </style>
 </head>
 <body>
-    <h2>{{ post.title }}</h2>
-    <img src="{{ post.image_url }}" alt="Фото">
-    <p>{{ post.description }}</p>
-    <p><strong>Количество лайков:</strong> {{ post.likes }}</p>
-    <h4>Пользователи, поставившие лайк:</h4>
-    <ul>
-        {% for user in post.liked_by %}
-            <li>{{ user }}</li>
-        {% else %}
-            <li>Пока никто не лайкнул</li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('index') }}">← Назад к постам</a>
+    <h1>Статистика поста</h1>
+
+    <div class="post">
+        <h3>{{ post.title }}</h3>
+        <img src="{{ post.image_url }}" alt="Фото">
+        <p>{{ post.description }}</p>
+        <div class="likes">Лайков: {{ post.likes }}</div>
+        <div class="likes">
+            <h4>Поставили лайк:</h4>
+            <ul>
+                {% for user in post.liked_by %}
+                    <li>{{ user }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="comments">
+            <h4>Комментарии:</h4>
+            <ul>
+                {% for comment in post.comments %}
+                    <li><strong>{{ comment.author }}:</strong> {{ comment.text }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <p><a href="{{ url_for('index') }}">⬅ Назад</a></p>
 </body>
 </html>
+
+
