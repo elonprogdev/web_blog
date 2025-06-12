@@ -124,6 +124,17 @@ def comment_post(index):
 
     return redirect(url_for("index"))
 
+@app.route("/post/<int:index>", methods=["GET"])
+def post_stats(index):
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    posts = session.get("posts", [])
+    if not (0 <= index < len(posts)):
+        return "Пост не найден", 404
+
+    post = posts[index]
+    return render_template("post_stats.html", post=post, index=index)
 
 
 
