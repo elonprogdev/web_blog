@@ -126,13 +126,24 @@ def comment_post(index):
 
     return redirect(url_for("index"))
 
-@app.route("/post/<int:index>")
+@app.route("/post/<int:index>", methods=["GET"])
 def post_stats(index):
+    if "user" not in session:
+        return redirect(url_for("login"))
+
     posts = session.get("posts", [])
-    if 0 <= index < len(posts):
-        post = posts[index]
-        return render_template("post_stats.html", post=post, index=index, users=users)
-    return "Пост не найден", 404
+    if not (0 <= index < len(posts)):
+        return "Пост не найден", 404
+
+    post = posts[index]
+    return render_template("post_stats.html", post=post, index=index)
+
+
+@app.route("/profile/<username>")
+def profile(username):
+    posts = session.get("posts", [])
+    posts_with_index = [(i, post) for i, post in enumerate(posts) if post.get("author") == username]
+    return render_template("profile.html", posts=posts_with_index, username=username)
 
 
 
