@@ -9,39 +9,52 @@ UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-users = {}  # {login: password}
+users = {}  # {login: {"password": ..., "avatar": ...}}
 likes = {}
 
 @app.route("/")
 def index():
     posts = session.get("posts", [])
     posts_with_index = list(enumerate(posts))
-    return render_template("index.html", posts=posts_with_index, user=session.get("user"))
+    return render_template("index.html", posts=posts_with_index, user=session.get("user"), users=users)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         login = request.form.get("login")
         password = request.form.get("password")
+        avatar = request.files.get("avatar")
+        avatar_path = None
+
+        if avatar and avatar.filename:
+            ext = os.path.splitext(avatar.filename)[1]
+            filename = f"{uuid.uuid4()}{ext}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            avatar.save(filepath)
+            avatar_path = "/" + filepath.replace("\\", "/")
+
         if login and password and login not in users:
-            users[login] = password
+            users[login] = {"password": password, "avatar": avatar_path}
             session["user"] = login
             return redirect(url_for("index"))
         else:
             return "Пользователь уже существует или данные некорректны"
     return render_template("register.html")
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         login = request.form.get("login")
         password = request.form.get("password")
-        if login in users and users[login] == password:
+        user_data = users.get(login)
+        if user_data and user_data["password"] == password:
             session["user"] = login
             return redirect(url_for("index"))
         else:
             return "Неверный логин или пароль"
     return render_template("login.html")
+
 
 @app.route("/logout")
 def logout():
@@ -69,7 +82,8 @@ def add_post():
             "image_url": "/" + filepath.replace("\\", "/"),
             "likes": 0,
             "liked_by": [],
-            "comments": []
+            "comments": [],
+            "author": session["user"]  # <= Вот сюда добавляем
         }
 
         posts = session.get("posts", [])
@@ -117,8 +131,9 @@ def post_stats(index):
     posts = session.get("posts", [])
     if 0 <= index < len(posts):
         post = posts[index]
-        return render_template("post_stats.html", post=post, index=index)
+        return render_template("post_stats.html", post=post, index=index, users=users)
     return "Пост не найден", 404
+
 
 
 

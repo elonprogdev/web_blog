@@ -3,10 +3,13 @@
 <head><meta charset="UTF-8"><title>Регистрация</title></head>
 <body>
     <h2>Регистрация</h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <input type="text" name="login" placeholder="Логин" required>
         <input type="password" name="password" placeholder="Пароль" required>
+        <label>Аватар:</label>
+        <input type="file" name="avatar" accept="image/*">
         <button type="submit">Зарегистрироваться</button>
     </form>
 </body>
 </html>
+

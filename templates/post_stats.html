@@ -28,13 +28,25 @@
         </div>
         <div class="comments">
             <h4>Комментарии:</h4>
-            <ul>
-                {% for comment in post.comments %}
-                    <li><strong>{{ comment.author }}:</strong> {{ comment.text }}</li>
-                {% endfor %}
-            </ul>
+        {% for comment in post.comments %}
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                {% set comment_author = comment.author %}
+                {% set comment_author_data = users.get(comment_author) %}
+                {% if comment_author_data and comment_author_data.avatar %}
+                    <img src="{{ comment_author_data.avatar }}" alt="Аватар" width="30" height="30">
+
+                {% else %}
+                    <img class="avatar" src="https://via.placeholder.com/50" alt="Нет аватара">
+                {% endif %}
+                <p style="margin: 0;"><strong>{{ comment_author }}:</strong> {{ comment.text }}</p>
+            </div>
+        {% endfor %}
+            
         </div>
     </div>
+    <hr>
+    
+
 
     <p><a href="{{ url_for('index') }}">⬅ Назад</a></p>
 </body>

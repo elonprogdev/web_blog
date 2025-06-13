@@ -12,6 +12,7 @@
         .post img { max-width: 100%; height: auto; }
         .likes { color: #e74c3c; margin-top: 10px; }
         .auth { margin-bottom: 20px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 10px; }
     </style>
 </head>
 <body>
@@ -38,29 +39,50 @@
     </form>
     {% endif %}
 
-    {% for index, post in posts %}
-    <div class="post">
-        <h3>{{ post.title }}</h3>
-        <img src="{{ post.image_url }}" alt="Фото">
-        <p>{{ post.description }}</p>
-
-        {% if user %}
-        <form method="post" action="{{ url_for('like_post', index=index) }}">
-            <button type="submit">❤️ Лайк</button>
-        </form>
-
-        <form method="post" action="{{ url_for('comment_post', index=index) }}">
-            <input type="text" name="comment" placeholder="Ваш комментарий..." required>
-            <button type="submit">Оставить комментарий</button>
-        </form>
-
-        <p><a href="{{ url_for('post_stats', index=index) }}">📊 Подробнее</a></p>
+{% for index, post in posts %}
+<div class="post">
+    <div>
+        {% set author = post.author %}
+        {% set author_data = users.get(author) %}
+        {% if author_data and author_data.avatar %}
+            <img class="avatar" src="{{ author_data.avatar }}" alt="Аватар">
+        {% else %}
+            <img class="avatar" src="https://via.placeholder.com/50" alt="Нет аватара">
         {% endif %}
-
-        <div class="likes">Лайков: {{ post.likes }}</div>
+        <strong>{{ author }}</strong>
     </div>
+
+    <h3>{{ post.title }}</h3>
+    <img src="{{ post.image_url }}" alt="Фото">
+    <p>{{ post.description }}</p>
+
+    {% if user %}
+    <form method="post" action="{{ url_for('like_post', index=index) }}">
+        <button type="submit">❤️ Лайк</button>
+    </form>
+    {% endif %}
+    
+    <p><a href="{{ url_for('post_stats', index=index) }}">📊 Подробнее</a></p>
+    <div class="likes">Лайков: {{ post.likes }}</div>
+
+    <hr>
+    <h4>Комментарии:</h4>
+    {% for comment in post.comments %}
+        <p><strong>{{ comment.author }}:</strong> {{ comment.text }}</p>
     {% endfor %}
+
+    {% if user %}
+    <form method="post" action="{{ url_for('comment_post', index=index) }}">
+        <input type="text" name="comment" placeholder="Ваш комментарий..." required>
+        <button type="submit">Оставить комментарий</button>
+    </form>
+    {% endif %}
+</div>
+{% endfor %}
+
 </body>
 </html>
+
+
 
 
